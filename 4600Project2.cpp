@@ -48,7 +48,7 @@ int main() {
             }
             if(find(begin(access), end(access), false) == end(access))//meaning there is all false and can add the allocation to available
             {
-                for(int k=0; k<resources; k++)
+                for(int k=0; k<resources; k++)//add to the alocation part
                 {
                     available[k] += amatrix[i][k];
                 }
