@@ -16,6 +16,118 @@ int main() {
 // bottom left: assign/allocate
 // only need to read in top right and bottom left of matrix
     
+ //----reading file------------
+	ifstream inFile;
+	string filename;
+	cout <<"Enter the file name= ";
+	cin >> filename;
+	inFile.open(filename);
+	
+
+	//-------declare character--------------
+	int resources, processes;
+	vector<int> AvaiRe;	
+	vector<vector<int>> DataMatrix;
+	
+	//-------reading data from the file
+
+	string filedata;
+	while(getline(inFile, filedata))
+	{	
+	// avoid blank line
+		if ((filedata.empty()) || (filedata[0] == '\r')) 
+			continue;
+
+	// avoid comment lines
+		if (filedata[0] == '%' )	
+			continue;
+
+	//----------------- get Processes Number
+		if (filedata.find("num_processes=") != string::npos)
+		{
+			string takevalue;
+			takevalue = filedata.substr(filedata.find("=") + 1);
+			processes = stoi(takevalue);
+			continue;
+		}
+
+	//------------------ get Resources Number
+		if (filedata.find("num_resources=") != string::npos)
+		{
+			string takevalue;
+			takevalue = filedata.substr(filedata.find("=") + 1);
+			resources = stoi(takevalue);
+			continue;
+		}
+
+	
+	//------------------- get Available Resources
+		if (AvaiRe.empty())
+		{
+			size_t PosData = 0;
+			while (PosData < filedata.length())
+			{
+				size_t countcomma = filedata.find(",", PosData);
+			
+				// exit the loop
+				if ( countcomma == string::npos) 
+					countcomma = filedata.length();
+			
+				size_t takenumbersize = countcomma - PosData;
+				string takevalue = filedata.substr(PosData, takenumbersize);
+				AvaiRe.push_back(stoi(takevalue));
+				PosData = countcomma + 1;
+			}
+
+		continue;
+		}
+	//------------------get the matrix
+		// first, get the Processs Data
+		size_t PosData = 0;
+		vector<int> RowMatrix;
+		while (PosData < filedata.length())
+			{
+				size_t countcomma = filedata.find(",", PosData);
+			
+				// exit the loop
+				if ( countcomma == string::npos) 
+					countcomma = filedata.length();
+			
+				size_t takenumbersize = countcomma - PosData;
+				string takevalue = filedata.substr(PosData, takenumbersize);
+				RowMatrix.push_back(stoi(takevalue));
+				PosData = countcomma + 1;
+			}
+		DataMatrix.push_back(RowMatrix);
+
+	} //------------------- end Reading file loop
+	
+
+	//---------display
+	cout <<processes << endl;
+	cout <<resources << endl;
+	for (int i=0; i< AvaiRe.size(); i++)
+		cout << AvaiRe[i] << " ";
+	cout << endl;
+	for (int i=0; i< DataMatrix.size(); i++)
+	{
+		for (int j =0; j < DataMatrix[0].size(); j++) 
+			cout << DataMatrix[i][j] << " ";
+		cout << endl;
+	}
+	
+	cout <<endl;
+
+//----------------closing file-----------------------
+	inFile.close();
+
+/*------------value we get after reading file
+	processes = number of Processor
+	resources = number of Resources 
+	AvaiRe = Available / units of each resource
+	DataMatrix = Matrix
+
+*/
 
 
 // store into 2 N-dimension arrays : allocation, request
